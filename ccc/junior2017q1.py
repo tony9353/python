@@ -1,1 +1,1 @@
-a=input().split(' ');x,y=[eval(i)for i in a];print((x>0)*1+(y<0)*1+(x<0)*2+(x<0 and y>0)*2)
+a=input().split(' ');x,y=[int(i)for i in a];print((x>0)*1+(y<0)*1+(x<0)*2+(x<0 and y>0)*2)
