@@ -1,4 +1,3 @@
-from __future__ import print_function
 import cv2 as cv
 import numpy as np
 import argparse
@@ -53,13 +52,13 @@ while True:
     x.append(x[-1]+1)
     y.append(np.sum(fgMask))
 
-    if np.sum(fgMask) > 250000:
+    if np.sum(fgMask) > 250000 and np.mod(y[-1],10)==0:
         print("movement!!!" + str(np.sum(fgMask)))
     # if i>200:
     #     cv.imwrite(f"subtract_src{i}.png", fg)
     
     keyboard = cv.waitKey(30)
-    if keyboard == 'q' or keyboard == 27:
+    if keyboard == 27:
         plt.plot(x,y,color='b',label='hi')
         plt.show()
         break
