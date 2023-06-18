@@ -1,30 +1,18 @@
 import cv2 as cv
 import numpy as np
-import argparse
 import matplotlib.pyplot as plt
 
+i = 0
 x = [0]
 y = [0]
 
-# build command line UI
-parser = argparse.ArgumentParser(description='This program shows how to use background subtraction methods provided by \
-                                              OpenCV. You can process both videos and images.')
-parser.add_argument('--input', type=str, help='Path to a video or a sequence of image.', default='vtest.mp4')
-parser.add_argument('--algo', type=str, help='Background subtraction method (KNN, MOG2).', default='MOG2')
-parser.add_argument('--blur', type=int, help='Apply bluring to source', default=1)
-args = parser.parse_args()
-
-# Pick a Background subtractor
-if args.algo == 'MOG2':
-    backSub = cv.createBackgroundSubtractorMOG2()
-# elif args.algo == 'KNN':
-else:
-    backSub = cv.createBackgroundSubtractorKNN()
+backSub = cv.createBackgroundSubtractorMOG2()
+#backSub = cv.createBackgroundSubtractorKNN()
 
 # Open up the video
 capture = cv.VideoCapture(0)
 if not capture.isOpened():
-    print('Unable to open: ' + args.input)
+    print('Unable to open.')
     exit(0)
 
 # create a variable for frame subtraction
@@ -38,7 +26,7 @@ while True:
     # Convert video to grayscale, apply bluring
     (rows,cols,_) = frame.shape
     frame_rz = cv.resize(cv.cvtColor(frame, cv.COLOR_BGR2GRAY), (480, 640))
-    frame_blur = cv.GaussianBlur(frame_rz, (args.blur, args.blur), 0)
+    frame_blur = cv.GaussianBlur(frame_rz, (1, 1), 0)
     
     # Use background subtractor to get the forground
     fgMask = backSub.apply(frame_blur)
@@ -52,11 +40,12 @@ while True:
     x.append(x[-1]+1)
     y.append(np.sum(fgMask))
 
-    if np.sum(fgMask) > 250000 and np.mod(y[-1],10)==0:
+    if np.sum(fgMask) > 250000 and i>=30:
         print("movement!!!" + str(np.sum(fgMask)))
-    # if i>200:
-    #     cv.imwrite(f"subtract_src{i}.png", fg)
+        i = 0
     
+    i += 1
+
     keyboard = cv.waitKey(30)
     if keyboard == 27:
         plt.plot(x,y,color='b',label='hi')
